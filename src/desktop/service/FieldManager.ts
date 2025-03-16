@@ -7,7 +7,7 @@ import type {
 } from "@kintone/rest-api-client/lib/src/client/types";
 import type { SingleLineText } from "@kintone/rest-api-client/lib/src/KintoneFields/types/field";
 
-export class MessageService {
+export class FieldManager {
   private config: ConfigSchema;
   private kintoneSdk: KintoneSdk;
 

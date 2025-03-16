@@ -3,14 +3,14 @@ import { beforeEach, describe, expect, it, type Mocked, vi } from "vitest";
 
 import { KintoneSdk } from "../../shared/util/kintoneSdk";
 
-import { MessageService } from "./MessageService";
+import { FieldManager } from "./FieldManager";
 
 import type { ConfigSchema } from "../../shared/types/Config";
 import type { Record } from "@kintone/rest-api-client/lib/src/client/types";
 
 vi.mock("../shared/util/kintoneSdk");
 
-describe("MessageService", () => {
+describe("FieldManager", () => {
   let mockkintoneSdk: Mocked<KintoneSdk>;
   let mockRestApiClient: Mocked<KintoneRestAPIClient>;
   let kintone: any;
@@ -39,7 +39,7 @@ describe("MessageService", () => {
         fields: [],
       };
 
-      const messageService = new MessageService(mockConfig, mockkintoneSdk);
+      const fieldManager = new FieldManager(mockConfig, mockkintoneSdk);
       const appId = "1";
 
       vi.spyOn(kintone.app, "getQueryCondition").mockReturnValue("");
@@ -52,7 +52,7 @@ describe("MessageService", () => {
         ] as Record[],
       });
 
-      const records = await messageService.fetchRecords(appId);
+      const records = await fieldManager.fetchRecords(appId);
       expect(records).toEqual([
         {
           field1: { type: "SINGLE_LINE_TEXT", value: "value1" },
@@ -69,7 +69,7 @@ describe("MessageService", () => {
         fields: ["field1", "field2"],
       };
 
-      const messageService = new MessageService(mockConfig, mockkintoneSdk);
+      const fieldManager = new FieldManager(mockConfig, mockkintoneSdk);
 
       const records: Record[] = [
         {
@@ -93,7 +93,7 @@ describe("MessageService", () => {
           },
         },
       ];
-      const message = messageService.generateMessage(records);
+      const message = fieldManager.generateMessage(records);
 
       expect(message).toBe("prefix\nvalue1 value2\nvalue3 value4");
     });
