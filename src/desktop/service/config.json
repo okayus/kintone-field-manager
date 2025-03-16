@@ -1,0 +1,14 @@
+{
+    "disabledFields": [
+      {
+        "fieldCode": "field1",
+        "disabled": true,
+        "condition": {
+          "compareType": "field",
+          "field": "field2",
+          "operator": "=",
+          "value": "value2"
+        }
+      }
+    ]
+  }

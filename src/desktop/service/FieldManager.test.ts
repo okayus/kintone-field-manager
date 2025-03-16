@@ -8,7 +8,7 @@ import { FieldManager } from "./FieldManager";
 import type { ConfigSchema } from "../../shared/types/Config";
 import type { Record } from "@kintone/rest-api-client/lib/src/client/types";
 
-vi.mock("../shared/util/kintoneSdk");
+vi.mock("../../shared/util/kintoneSdk");
 
 describe("FieldManager", () => {
   let mockkintoneSdk: Mocked<KintoneSdk>;
@@ -32,70 +32,25 @@ describe("FieldManager", () => {
     mockkintoneSdk.getRecords = vi.fn();
   });
 
-  describe("fetchRecords", () => {
-    it("取得したレコードを返す", async () => {
-      const mockConfig: ConfigSchema = {
-        prefix: "",
-        fields: [],
-      };
-
-      const fieldManager = new FieldManager(mockConfig, mockkintoneSdk);
-      const appId = "1";
-
-      vi.spyOn(kintone.app, "getQueryCondition").mockReturnValue("");
-      mockkintoneSdk.getRecords.mockResolvedValue({
-        records: [
-          {
-            field1: { type: "SINGLE_LINE_TEXT", value: "value1" },
-            field2: { type: "SINGLE_LINE_TEXT", value: "value2" },
-          },
-        ] as Record[],
-      });
-
-      const records = await fieldManager.fetchRecords(appId);
-      expect(records).toEqual([
+  it("指定したフィールドがdisabledであるべきかを判定する", () => {
+    const mockConfig: ConfigSchema = {
+      disabledFields: [
         {
-          field1: { type: "SINGLE_LINE_TEXT", value: "value1" },
-          field2: { type: "SINGLE_LINE_TEXT", value: "value2" },
-        },
-      ]);
-    });
-  });
-
-  describe("generateMessages", () => {
-    it("プレフィックスとフィールド値を含むメッセージを返す", () => {
-      const mockConfig: ConfigSchema = {
-        prefix: "prefix\n",
-        fields: ["field1", "field2"],
-      };
-
-      const fieldManager = new FieldManager(mockConfig, mockkintoneSdk);
-
-      const records: Record[] = [
-        {
-          field1: {
-            type: "SINGLE_LINE_TEXT",
-            value: "value1",
-          },
-          field2: {
-            type: "SINGLE_LINE_TEXT",
+          fieldCode: "field1",
+          disabled: true,
+          condition: {
+            compareType: "field",
+            field: "field2",
+            operator: "=",
             value: "value2",
           },
         },
-        {
-          field1: {
-            type: "SINGLE_LINE_TEXT",
-            value: "value3",
-          },
-          field2: {
-            type: "SINGLE_LINE_TEXT",
-            value: "value4",
-          },
-        },
-      ];
-      const message = fieldManager.generateMessage(records);
+      ],
+    };
 
-      expect(message).toBe("prefix\nvalue1 value2\nvalue3 value4");
-    });
+    const fieldManager = new FieldManager(mockConfig, mockkintoneSdk);
+
+    expect(fieldManager.shouldFieldBeDisabled("field1")).toBe(true);
+    expect(fieldManager.shouldFieldBeDisabled("field2")).toBe(false);
   });
 });
