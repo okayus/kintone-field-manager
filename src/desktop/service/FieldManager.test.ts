@@ -53,4 +53,71 @@ describe("FieldManager", () => {
     expect(fieldManager.shouldFieldBeDisabled("field1")).toBe(true);
     expect(fieldManager.shouldFieldBeDisabled("field2")).toBe(false);
   });
+
+  it("複数のフィールドがdisabledであるべきかを判定する", () => {
+    const mockConfig: ConfigSchema = {
+      disabledFields: [
+        {
+          fieldCode: "field1",
+          disabled: true,
+          condition: {
+            compareType: "field",
+            field: "field2",
+            operator: "=",
+            value: "value2",
+          },
+        },
+        {
+          fieldCode: "field3",
+          disabled: false,
+          condition: {
+            compareType: "field",
+            field: "field4",
+            operator: "!=",
+            value: "value4",
+          },
+        },
+      ],
+    };
+
+    const fieldManager = new FieldManager(mockConfig, mockkintoneSdk);
+
+    expect(fieldManager.shouldFieldBeDisabled("field1")).toBe(true);
+    expect(fieldManager.shouldFieldBeDisabled("field3")).toBe(false);
+  });
+
+  it("複数のフィールドのdisabled状態を取得する", () => {
+    const mockConfig: ConfigSchema = {
+      disabledFields: [
+        {
+          fieldCode: "field1",
+          disabled: true,
+          condition: {
+            compareType: "field",
+            field: "field2",
+            operator: "=",
+            value: "value2",
+          },
+        },
+        {
+          fieldCode: "field3",
+          disabled: false,
+          condition: {
+            compareType: "field",
+            field: "field4",
+            operator: "!=",
+            value: "value4",
+          },
+        },
+      ],
+    };
+
+    const fieldManager = new FieldManager(mockConfig, mockkintoneSdk);
+    const disabledFields = fieldManager.getDisabledFields();
+
+    expect(disabledFields).toEqual({
+      field1: true,
+      field3: false,
+    });
+  });
 });

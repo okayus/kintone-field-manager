@@ -22,4 +22,12 @@ export class FieldManager {
     );
     return fieldConfig ? fieldConfig.disabled : false;
   }
+
+  public getDisabledFields(): { [key: string]: boolean } {
+    const disabledFields: { [key: string]: boolean } = {};
+    this.config.disabledFields.forEach((field) => {
+      disabledFields[field.fieldCode] = field.disabled;
+    });
+    return disabledFields;
+  }
 }
