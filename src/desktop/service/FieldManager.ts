@@ -16,17 +16,55 @@ export class FieldManager {
     this.kintoneSdk = kintoneSdk;
   }
 
-  public shouldFieldBeDisabled(fieldCode: string): boolean {
+  public shouldFieldBeDisabled(
+    fieldCode: string,
+    record: ExtendedRecord,
+  ): boolean {
     const fieldConfig = this.config.disabledFields.find(
       (field) => field.fieldCode === fieldCode,
     );
-    return fieldConfig ? fieldConfig.disabled : false;
+    if (!fieldConfig) return false;
+
+    if (
+      fieldConfig.condition &&
+      fieldConfig.condition.compareType === "field"
+    ) {
+      return this.compareFieldValues(fieldConfig.condition, record);
+    }
+
+    return fieldConfig.disabled;
   }
 
-  public getDisabledFields(): { [key: string]: boolean } {
+  private compareFieldValues(condition: any, record: ExtendedRecord): boolean {
+    const fieldValue = record[condition.field]?.value;
+    const compareValue = record[condition.value]?.value;
+    if (fieldValue === undefined || compareValue === undefined) return false;
+
+    switch (condition.operator) {
+      case "=":
+        return fieldValue === compareValue;
+      case "!=":
+        return fieldValue !== compareValue;
+      case ">":
+        return fieldValue > compareValue;
+      case "<":
+        return fieldValue < compareValue;
+      case ">=":
+        return fieldValue >= compareValue;
+      case "<=":
+        return fieldValue <= compareValue;
+      default:
+        return false;
+    }
+  }
+
+  public getDisabledFields(record: ExtendedRecord): { [key: string]: boolean } {
     const disabledFields: { [key: string]: boolean } = {};
     this.config.disabledFields.forEach((field) => {
-      disabledFields[field.fieldCode] = field.disabled;
+      disabledFields[field.fieldCode] = this.shouldFieldBeDisabled(
+        field.fieldCode,
+        record,
+      );
     });
     return disabledFields;
   }

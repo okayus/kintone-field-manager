@@ -26,7 +26,7 @@ import type { ConfigSchema } from "../shared/types/Config";
 
       // ここでフィールドのdisabledプロパティを設定する
       const record = event.record;
-      const disabledFields = fieldManager.getDisabledFields();
+      const disabledFields = fieldManager.getDisabledFields(record);
       Object.keys(disabledFields).forEach((fieldCode) => {
         if (record[fieldCode]) {
           record[fieldCode].disabled = disabledFields[fieldCode];
