@@ -27,11 +27,11 @@
     ]
   },
   "name": {
-    "en": "kintone-plugin-template",
-    "ja": "kintone-plugin-template"
+    "en": "kintone Field Manager",
+    "ja": "kintoneフィールドマネージャー"
   },
   "description": {
-    "en": "kintone-plugin-template",
-    "ja": "kintone-plugin-template"
+    "en": "A plugin that allows you to set field settings such as field inactivity.",
+    "ja": "フィールドの非活性などの設定を行うプラグインです。"
   }
 }

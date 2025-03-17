@@ -5,12 +5,38 @@
  * and run json-schema-to-typescript to regenerate this file.
  */
 
-export type NoName = string;
-
 export interface ConfigSchema {
-  prefix: NoName;
   /**
-   * メッセージに表示するフィールド
+   * 非活性にするフィールドの設定
    */
-  fields: string[];
+  disabledFields: {
+    /**
+     * フィールドコード
+     */
+    fieldCode: string;
+    /**
+     * フィールドを非活性にするかどうか
+     */
+    disabled: boolean;
+    condition?: {
+      /**
+       * 比較タイプ
+       */
+      compareType: "field" | "value";
+      /**
+       * 比較対象のフィールド
+       */
+      field: string;
+      /**
+       * 比較演算子
+       */
+      operator: "=" | "!=" | ">" | "<" | ">=" | "<=";
+      /**
+       * 比較対象の値
+       */
+      value: string;
+      [k: string]: unknown;
+    };
+    [k: string]: unknown;
+  }[];
 }

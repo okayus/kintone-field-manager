@@ -13,7 +13,7 @@ import { KintoneUtil } from "../shared/util/KintoneUtil";
 import type { ConfigSchema } from "../shared/types/Config";
 import type { Properties } from "@kintone/rest-api-client/lib/src/client/types";
 import type { IChangeEvent } from "@rjsf/core";
-import type { RJSFSchema, UiSchema } from "@rjsf/utils";
+import type { RJSFSchema } from "@rjsf/utils";
 
 interface AppProps {
   pluginId: string;
@@ -140,29 +140,22 @@ const ConfigForm: React.FC<AppProps> = ({
 
   const dynamicSchema = {
     ...configSchema,
-    properties: {
-      ...configSchema.properties,
-      fields: {
-        type: "array",
-        items: {
-          type: "string",
-          enum: fieldOptions.map((option) => option.const),
-        },
-      },
-    },
-  };
-
-  const UiSchema: UiSchema = {
-    prefix: {
-      "ui:widget": "textarea",
-    },
+    // properties: {
+    //   ...configSchema.properties,
+    //   fields: {
+    //     type: "array",
+    //     items: {
+    //       type: "string",
+    //       enum: fieldOptions.map((option) => option.const),
+    //     },
+    //   },
+    // },
   };
 
   return (
     <div>
       <Form
         schema={dynamicSchema as RJSFSchema}
-        uiSchema={UiSchema}
         validator={validator}
         formData={formData}
         onSubmit={handleSubmit}

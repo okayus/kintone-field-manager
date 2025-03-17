@@ -1,18 +1,49 @@
 {
   "type": "object",
   "properties": {
-    "prefix": {
-      "type": "string",
-      "title": "通知メッセージのプレフィックス"
-    },
-    "fields": {
+    "disabledFields": {
       "type": "array",
-      "description": "メッセージに表示するフィールド",
+      "description": "非活性にするフィールドの設定",
       "items": {
-        "type": "string"
+        "type": "object",
+        "properties": {
+          "fieldCode": {
+            "type": "string",
+            "description": "フィールドコード"
+          },
+          "disabled": {
+            "type": "boolean",
+            "description": "フィールドを非活性にするかどうか"
+          },
+          "condition": {
+            "type": "object",
+            "properties": {
+              "compareType": {
+                "type": "string",
+                "enum": ["field", "value"],
+                "description": "比較タイプ"
+              },
+              "field": {
+                "type": "string",
+                "description": "比較対象のフィールド"
+              },
+              "operator": {
+                "type": "string",
+                "enum": ["=", "!=", ">", "<", ">=", "<="],
+                "description": "比較演算子"
+              },
+              "value": {
+                "type": "string",
+                "description": "比較対象の値"
+              }
+            },
+            "required": ["compareType", "field", "operator", "value"]
+          }
+        },
+        "required": ["fieldCode", "disabled"]
       }
     }
   },
-  "required": ["prefix", "fields"],
+  "required": ["disabledFields"],
   "additionalProperties": false
 }
